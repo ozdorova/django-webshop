@@ -21,7 +21,7 @@
                             {{ total_items }} {{ total_items|ru_plural:"товар,товара,товаров" }} | 
                             {{ cart.get_total_price }} руб.
                         </a>
-                    {% else %}
+                    {% elif not order %}
                         Ваша корзина пуста.
                     {% endif %}
                 {% endwith %}

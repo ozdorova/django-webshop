@@ -10,7 +10,7 @@ class Order(models.Model):
     last_name = models.CharField(max_length=50, verbose_name='Фамилия')
     email = models.EmailField()
     address = models.CharField(max_length=250, verbose_name='Адрес')
-    postal_code = models.CharField(max_length=20, verbose_name='Почтовый код')
+    postal_code = models.CharField(max_length=20, verbose_name='Почтовый индекс')
     city = models.CharField(max_length=100, verbose_name='Город')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
