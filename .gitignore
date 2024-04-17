@@ -1,0 +1,4 @@
+.vscode
+shop_venv/
+**/__pycache__/
+
