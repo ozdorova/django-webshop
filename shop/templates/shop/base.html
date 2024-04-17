@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,7 +14,17 @@
         </div>
         <div id="subheader">
             <div class="cart">
-                Ваша корзина пуста
+                {% with total_items=cart|length %}
+                    {% if total_items > 0 %}
+                        Корзина:
+                        <a href="{% url 'cart:cart_detail' %}">
+                            {{ total_items }} {{ total_items|ru_plural:"товар,товара,товаров" }} | 
+                            {{ cart.get_total_price }} руб.
+                        </a>
+                    {% else %}
+                        Ваша корзина пуста.
+                    {% endif %}
+                {% endwith %}
             </div>
         </div>
         <div id="content">
