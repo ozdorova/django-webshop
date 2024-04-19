@@ -58,6 +58,8 @@ def order_create(request):
             # запись номера операции
             order.payment_id = payment.id
             
+            order.save()
+            
             #перенаправление на подтверждение юкассы
             return HttpResponseRedirect(payment.confirmation.confirmation_url)
         
@@ -73,5 +75,8 @@ def order_create(request):
 def order_created_view(request):
     """Вызывается в случае успешной оплаты"""
     #запуск асинхронного задания celery
+    order = Order.objects.get(id=order_id)
+    order.paid = True
+    order.save()
     order_created_task.delay(order_id)
     return render(request, 'orders/order/created.html')
