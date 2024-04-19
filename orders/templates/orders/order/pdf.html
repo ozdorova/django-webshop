@@ -1,0 +1,48 @@
+<html>
+    <body>
+        <h1>r_shop</h1>
+        <p>Счет номер {{ order.id }} <br>
+            <span class="secondary">
+                {{ order.created|date:"M d, Y" }}
+            </span>
+        </p>
+        <h3>Для</h3>
+        <p>
+            {{ order.first_name }} {{ order.last_name }}<br>
+            {{ order.email }}<br>
+            {{ order.address }}<br>
+            {{ order.postal_code }}, {{ order.city }}
+            <br>
+            ID оплаты: {% if order.payment_id %}{{ order.payment_id }}{% else %}Не найден{% endif %}
+        </p>
+        <h3>Приобретенные товары</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Цена за шт.</th>
+                    <th>Количесвто</th>
+                    <th>Цена</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                    <tr class="row{% cycle '1' '2' %}">
+                        <td>{{ item.product.name }}</td>
+                        <td class="num">{{ item.price }} руб.</td>
+                        <td class="num">{{ item.quantity }}</td>
+                        <td class="num">{{ item.get_cost }} руб.</td>
+                    </tr>
+                {% endfor %}
+                <tr class="total">
+                    <td colspan="3">Итого</td>
+                    <td class="num">{{ order.get_total_cost }} руб.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <span class="{% if order.paid %}paid{% else %}pending{% endif %}">
+            {% if order.paid %}Оплачен{% else %}Не оплачен{% endif %}
+        </span>
+    </body>
+</html>

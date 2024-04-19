@@ -11,6 +11,7 @@ sqlparse = "==0.5.0"
 flower = "*"
 celery = "*"
 yookassa = "*"
+weasyprint = "==56.1"
 
 [dev-packages]
 
