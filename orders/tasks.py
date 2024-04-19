@@ -8,14 +8,14 @@ from .models import Order
 # celery -A myshop flower - запуск flower мониторинг задач, localhost:5555
 
 @shared_task
-def order_created(order_id):
+def order_created_task(order_id):
     """
     Асинхронное задание по отправке уведомления по почте
     при успешной создании заказа
     """
 
     order = Order.objects.get(id=order_id)
-    subject = f'Закак номер {order.id}'
+    subject = f'Заказ номер {order.id}'
     message = f'Уважаемый {order.first_name}, \n\nВаш заказ успешно создан. Номер заказа: {order.id}'
     mail_sent = send_mail(
         subject,

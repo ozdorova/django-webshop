@@ -8,8 +8,9 @@ asgiref = "==3.8.1"
 django = "==4.1.2"
 pillow = "==9.2.0"
 sqlparse = "==0.5.0"
-celery = "==4.4.7"
 flower = "*"
+celery = "*"
+yookassa = "*"
 
 [dev-packages]
 

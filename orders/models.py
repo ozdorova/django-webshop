@@ -1,4 +1,4 @@
-from tabnanny import verbose
+
 from django.db import models
 from shop.models import Product
 
