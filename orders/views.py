@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from .models import OrderItem
+from .models import OrderItem, Order
 from .forms import OrderCreateForm
 from cart.cart import Cart
 from .tasks import order_created_task
@@ -29,6 +29,7 @@ def order_create(request):
                     price=item['price'],
                     quantity=item['quantity'],
                 )
+                
             price = cart.get_total_price()
             cart.clear()
             order_id = order.id
@@ -54,15 +55,12 @@ def order_create(request):
             #создание платежа юкасса
             payment = Payment.create(payment_data, uuid.uuid4())
             
+            # запись номера операции
+            order.payment_id = payment.id
+            
             #перенаправление на подтверждение юкассы
             return HttpResponseRedirect(payment.confirmation.confirmation_url)
         
-        
-            # return render(
-            #     request,
-            #     'orders/order/created.html',
-            #     {'order': order},
-            # )
     else: # GET
         form = OrderCreateForm()
     return render(
@@ -73,6 +71,7 @@ def order_create(request):
 
 
 def order_created_view(request):
+    """Вызывается в случае успешной оплаты"""
     #запуск асинхронного задания celery
     order_created_task.delay(order_id)
     return render(request, 'orders/order/created.html')

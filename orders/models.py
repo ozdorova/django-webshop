@@ -15,6 +15,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='Обновлен')
     paid = models.BooleanField(default=False, verbose_name='Оплачен')
+    payment_id = models.CharField(max_length=250, blank=True, verbose_name='ID платежа')
     
     class Meta:
         ordering = [
