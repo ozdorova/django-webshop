@@ -1,12 +1,15 @@
+import re
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from .models import OrderItem, Order
 from .forms import OrderCreateForm
 from cart.cart import Cart
 from .tasks import order_created_task
 from yookassa import Payment, Configuration
 from django.urls import reverse
+from django.contrib.admin.views.decorators import staff_member_required
 import uuid
+
 
 order_id = None
 
@@ -69,6 +72,16 @@ def order_create(request):
         request,
         'orders/order/create.html',
         {'cart': cart, 'form': form},
+    )
+
+
+@staff_member_required
+def admin_order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(
+        request,
+        'admin/orders/order/detail.html',
+        {'order': order},
     )
 
 
