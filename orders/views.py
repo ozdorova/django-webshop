@@ -51,8 +51,10 @@ def order_create(request):
                 "description": f"Заказ {order.id}"
             }
             
+            #создание платежа юкасса
             payment = Payment.create(payment_data, uuid.uuid4())
             
+            #перенаправление на подтверждение юкассы
             return HttpResponseRedirect(payment.confirmation.confirmation_url)
         
         
