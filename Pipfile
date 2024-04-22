@@ -12,6 +12,7 @@ flower = "*"
 celery = "*"
 yookassa = "*"
 weasyprint = "==56.1"
+redis = "==4.3.4"
 
 [dev-packages]
 
