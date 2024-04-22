@@ -11,6 +11,6 @@ class Coupon(models.Model):
         help_text='Процент от 0 до 100'
     )
     active = models.BooleanField()
-    
+
     def __str__(self):
         return self.code

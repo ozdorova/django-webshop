@@ -16,18 +16,22 @@ import weasyprint
 
 order_id = None
 
+
 def order_create(request):
     """Создание заказа"""
-    
-    #текущая корзина
+
+    # текущая корзина
     cart = Cart(request)
     global order_id
-    
-    
+
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
         if form.is_valid():
-            order = form.save()
+            order = form.save(commit=False)
+            if cart.coupon:
+                order.coupon = cart.coupon
+                order.discount = cart.coupon.discount
+            order.save()
             for item in cart:
                 OrderItem.objects.create(
                     order=order,
@@ -35,15 +39,15 @@ def order_create(request):
                     price=item['price'],
                     quantity=item['quantity'],
                 )
-                
-            price = cart.get_total_price()
+
+            price = cart.get_total_price_after_discount()
             cart.clear()
             order_id = order.id
-            
+
             # тестовые данные Юкасса
             Configuration.account_id = '372530'
             Configuration.secret_key = 'test_f0RImG50ZazCZyiulHMXMDnT5mLmmsqEs6qGI0WZbRA'
-            
+
             # данные для передачи по api
             payment_data = {
                 "amount": {
@@ -57,19 +61,19 @@ def order_create(request):
                 "capture": True,
                 "description": f"Заказ {order.id}"
             }
-            
-            #создание платежа юкасса
+
+            # создание платежа юкасса
             payment = Payment.create(payment_data, uuid.uuid4())
-            
+
             # запись номера операции
             order.payment_id = payment.id
-            
+
             order.save()
-            
-            #перенаправление на подтверждение юкассы
+
+            # перенаправление на подтверждение юкассы
             return HttpResponseRedirect(payment.confirmation.confirmation_url)
-        
-    else: # GET
+
+    else:  # GET
         form = OrderCreateForm()
     return render(
         request,
@@ -103,7 +107,7 @@ def admin_order_pdf(request, order_id):
 
 def order_created_view(request):
     """Вызывается в случае успешной оплаты"""
-    #запуск асинхронного задания celery
+    # запуск асинхронного задания celery
     order = Order.objects.get(id=order_id)
     order.paid = True
     order.save()

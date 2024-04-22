@@ -17,3 +17,6 @@ weasyprint = "==56.1"
 
 [requires]
 python_version = "3.11"
+
+[scripts]
+run_celery = "celery -A myshop worker -l info"
